@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\API\ProjectController;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +16,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::resource('project',ProjectController::class);
+
+Route::get('task/view/{id}',function($id){
+    $data = Task::where('project_id',$id)->get();
+    return response()->json([
+        'status' => 200,
+        'data' => $data
+    ]);
 });
