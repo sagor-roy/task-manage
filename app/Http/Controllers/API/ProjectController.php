@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends Controller
 {
@@ -31,18 +32,31 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|unique:projects',
-            'description' => 'required'
+            'description' => 'required',
+            'img' => 'required'
         ]);
 
-        $input = [
-            'name' => $request->input('name'),
-            'desc' => $request->input('description')
-        ];
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'errors' => $validator->getMessageBag(),
+            ]);
+        }
+
+        if($request->hasFile('img')) {
+            $file = $request->file('img');
+            $filename = substr(md5(time()), 0, 15).'.'.$file->getClientOriginalExtension();
+            $file->move('upload/',$filename);
+        }
 
         try {
-            Project::create($input);
+            Project::create([
+                'name' => $request->input('name'),
+                'desc' => $request->input('description'),
+                'img' =>  $filename,
+            ]);
             return response()->json([
                 'status' => 200,
                 'message' => 'Data Created Successful'
@@ -79,10 +93,17 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'description' => 'required'
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'errors' => $validator->getMessageBag(),
+            ]);
+        }
 
         $input = [
             'name' => $request->input('name'),

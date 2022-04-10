@@ -11,7 +11,8 @@ class Project extends Model
 
     protected $fillable = [
         'name',
-        'desc'
+        'desc',
+        'img'
     ];
 
     public function task() {

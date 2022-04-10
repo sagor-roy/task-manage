@@ -22,8 +22,9 @@ class ProjectFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->text(10),
-            'desc' => $this->faker->text,
+            'name' => $this->faker->realText(23),
+            'desc' => $this->faker->realText(100),
+            'img' => 'https://via.placeholder.com/300'
         ];
     }
 }
