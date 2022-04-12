@@ -45,7 +45,7 @@ Route::post('access', function (Request $request) {
         ]);
     } else{ 
         return response()->json([
-            'status' => 422,
+            'status' => 'error',
             'message' => 'Your creadential doesn\'t match our record',
         ]);
     }
